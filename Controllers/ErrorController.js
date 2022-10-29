@@ -7,8 +7,8 @@ exports.ErrorController = (err, req, res, next) => {
   err.message = err.message || "Internal Server Error";
 
   if (process.env.NODE_ENV === "production") {
-    if(err.name = 'JsonWebTokenError') err= new NewErrorHandler(`The Token is Invalid `, 401);
-    if(err.name = 'TokenExpiredError') err= new NewErrorHandler(`The Token is Expired `, 401);
+    if(err.name === 'JsonWebTokenError') err= new NewErrorHandler(`The Token is Invalid `, 401);
+    if(err.name === 'TokenExpiredError') err= new NewErrorHandler(`The Token is Expired `, 401);
     
     if(err.name === 'CastError') {
         const Error = {...err};

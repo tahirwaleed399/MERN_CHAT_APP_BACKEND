@@ -8,7 +8,22 @@ const { sendMail } = require("../Utils/email");
 const { json } = require("express");
 const crypto = require("crypto");
 
-
+exports.logout = catchAsyncErrors(async function (req, res, next) {
+  res
+    .status(200)
+    .cookie("jwt", null, {
+      expiresIn: Date.now(),
+    })
+    .json({
+      success: true,
+    });
+});
+exports.getUser = catchAsyncErrors(async function (req, res, next) {
+  jsonResponce(res, 200, true, { user: req.user });
+});
+exports.isAuthenticated = catchAsyncErrors(async function (req, res, next) {
+  jsonResponce(res, 200, true, "User is Authenticated");
+});
 const signToken = (id,res) => {
  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -66,6 +81,9 @@ exports.protectRoute = catchAsyncErrors(async function (req, res, next) {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
+  }
+  if(req.cookies){
+    token = req.cookies.jwt
   }
   // 2: Checks if the token is valid and verified or not
 
