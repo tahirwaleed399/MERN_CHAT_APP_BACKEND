@@ -7,8 +7,6 @@ const NewErrorHandler = require("../Utils/NewErrorHandler");
 const { sendMail } = require("../Utils/email");
 const { json } = require("express");
 const crypto = require("crypto");
-const cloudinary  = require('cloudinary');
-
 
 exports.logout = catchAsyncErrors(async function (req, res, next) {
   res
@@ -40,23 +38,15 @@ const signToken = (id,res) => {
   return (token);
 };
 exports.signUp = catchAsyncErrors(async (req, res, next) => {
-  const { name, email, password, confirmPassword, profile } = req.body;
+  const { name, email, password, confirmPassword } = req.body;
   // It is a big security flaw 😡
   // const user =await  User.create(req.body);
-  console.log({ name, email, password, confirmPassword });
-  
-
-  if(! profile){ return next(new NewErrorHandler('Profile pic is mandatory '))}
-  const {url ,public_id } = await cloudinary.v2.uploader.upload(profile , {
-    folder : 'CHAT_APP'
-  });
   const user = await User.create({
     name,
     email,
     password,
     confirmPassword,
-    profile : {url ,public_id }
-   
+    photo: req.body.photo ? req.body.photo : undefined,
   });
 
   const token = signToken(user._id,res);
