@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const userRouter =  require('./Routes/user.js');
+const chatRouter =  require('./Routes/chat.js');
+const messageRouter =  require('./Routes/message');
 const authRouter =  require('./Routes/auth.js');
 const { jsonResponce } = require('./Utils/responce.js');
 const NewErrorHandler = require('./Utils/NewErrorHandler');
@@ -12,16 +14,21 @@ var cors = require('cors')
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+
+
+
 const limiter = rateLimit({
-    max:100, 
+    max:1000, 
     windowMs : 60 *60 *1000,
     message : 'Too many request from the same IP please try in an hour',
 })
 const corsOptions = {
-    // origin: ['http://example.com', 'your Frontend URLS'],
-    // optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    origin: ['http://localhost:3000'],
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }
 app.use(cors(corsOptions))
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.json({ limit: "50mb" }));
 app.use(helmet())
 app.use(cookieParser());
 app.use(limiter)
@@ -38,6 +45,8 @@ app.use(xss());
 app.use(hpp());
 app.use(userRouter);
 app.use(authRouter);
+app.use(chatRouter);
+app.use(messageRouter);
 app.all('*', (req, res , next)=>next(new NewErrorHandler('Route Not Found' , 404)))
 app.use(ErrorController)
 
