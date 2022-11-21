@@ -17,7 +17,13 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, "Email Should be Correct"],
   },
-  photo: String,
+  profile: {
+    type : {
+      url : String , 
+      public_id : String
+    },
+    required: [true , 'Profile Pic is mandatory to upload']
+  },
   role: {
     type: String,
     enum: ["admin", "user"],
@@ -49,7 +55,9 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
-});
+}
+,
+{ timestaps: true });
 userSchema.pre(/^find/, async function (next) {
  this.find({active : {$ne : false }});
   next();

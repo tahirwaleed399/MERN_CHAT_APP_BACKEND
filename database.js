@@ -6,7 +6,7 @@ exports.connectMongoDb = function(){
     mongoose.connect(
         process.env.DATABASE_URL,
         {
-          dbName: "SamplePortfolio",
+          dbName: "CHAT_APP",
           useNewUrlParser: true,
           useUnifiedTopology: true,
         },
