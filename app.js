@@ -18,7 +18,7 @@ const hpp = require('hpp');
 
 
 const limiter = rateLimit({
-    max:1000, 
+    max:100, 
     windowMs : 60 *60 *1000,
     message : 'Too many request from the same IP please try in an hour',
 })
